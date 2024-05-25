@@ -16,5 +16,9 @@ public enum Function {
     /**
      * 退出
      */
-    EXIT
+    EXIT,
+    /**
+     * 我赢了
+     */
+    WIN
 }
