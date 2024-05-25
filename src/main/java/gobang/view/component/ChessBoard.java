@@ -1,5 +1,8 @@
 package gobang.view.component;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import java.awt.*;
 
 /**
@@ -8,8 +11,29 @@ import java.awt.*;
  * @author SK
  * @date 2024/05/25
  */
+@EqualsAndHashCode(callSuper = true)
+@Data
 public class ChessBoard extends Panel {
 
+    /**
+     * 棋盘格子大小
+     */
+    int cellSize = 40;
+
+    /**
+     * 棋盘右边界
+     */
+    int rightEnd = 580;
+
+    /**
+     * 棋盘上的大黑点大小
+     */
+    int ovalSize = 8;
+
+    /**
+     * 棋盘上的大黑点坐标对齐参考点
+     */
+    int[] ovalPoints = {126, 306, 486};
 
     public ChessBoard() {
         setSize(600, 600);
@@ -22,20 +46,17 @@ public class ChessBoard extends Panel {
     /**
      * 画棋盘
      * <p> 声明: 参考gobang_game项目绘制 </p>
+     * <p> 18*18个下棋点, 对应棋盘和存储序列 </p>
      */
     @Override
     public void paint(Graphics g) {
-        int cellSize = 40; // 棋盘格子大小
-        int rightEnd = 580; // 棋盘右边界
-        int ovalSize = 8; // 棋盘上的大黑点大小
-        int[] ovalPoints = {126, 306, 486};  // 棋盘上的大黑点坐标
-
-
+        // 画横线和竖线
         for (int i = cellSize; i <= rightEnd; i = i + 30) {
             g.drawLine(cellSize, i, rightEnd, i);
             g.drawLine(i, cellSize, i, rightEnd);
         }
 
+        // 画9个黑点
         for (int i = 0; i < 3; i++)
             for (int j = 0; j < 3; j++)
                 g.fillOval(ovalPoints[i], ovalPoints[j], ovalSize, ovalSize);

@@ -4,6 +4,8 @@ import gobang.pojo.entity.GameStatus;
 import gobang.view.ClientBackground;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -115,14 +117,56 @@ public class ClientApp extends ClientBackground {
     }
 
 
-
+    /**
+     * 绑定各类监听器
+     */
     public void bindListener() {
-//        // 绑定监听器: 需在键盘组件上添加监听器
-//        this.addKeyListener(this.chessBoard);
-///*        this.setFocusable(true);
-//        this.requestFocusInWindow();*/
+
+        bindKeyToAction("SPACE", "doSpaceAction", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Space key pressed");
+            }
+        });
+
+        // Bind the enter key to an action
+        bindKeyToAction("ENTER", "doEnterAction", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Enter key pressed");
+            }
+        });
+
+        //鼠标监听事件
+        chessBoard.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                //TODO 鼠标点击事件
+                int dis = chessBoard.getCellSize();
+                dis = 30;
+                Point point = e.getPoint(); // 获取鼠标点击的坐标
+                System.out.println("x=" + point.x +"    y=" + point.y);
+
+
+                int a = (point.x-30) / dis, b = (point.y-30) / dis;
+                System.out.println("a=" + a + " b=" + b);
+
+            }
+        });
+
     }
 
-
+    /**
+     * Binds a key to an action.
+     *
+     * @param key The key to bind.
+     * @param actionName The name of the action.
+     * @param action The action to perform.
+     */
+    private void bindKeyToAction(String key, String actionName, Action action) {
+        KeyStroke keyStroke = KeyStroke.getKeyStroke(key);
+        this.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(keyStroke, actionName);
+        this.getRootPane().getActionMap().put(actionName, action);
+    }
 
 }
