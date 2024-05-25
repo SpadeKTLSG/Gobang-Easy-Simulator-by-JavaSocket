@@ -59,9 +59,9 @@ public class ClientApp extends ClientBackground {
     /**
      * 客户端应用
      */
-    public ClientApp() {
+    public ClientApp(USERCOLOR userColor) {
         super();
-        init();
+        init(userColor);
         doConnect();
         login();
         bindListener();
@@ -70,8 +70,13 @@ public class ClientApp extends ClientBackground {
     /**
      * 初始化
      */
-    public void init() {
-        this.gs = new GameStatus(getLocalIp(), getLocalPort()); // 初始化游戏状态pojo字段
+    public void init(USERCOLOR userColor) {
+        // 初始化游戏状态字段
+
+        if (userColor == USERCOLOR.black)
+            this.gs = new GameStatus(USERCOLOR.black,USERCOLOR.black + " Player", getLocalIp(), getLocalPort());
+        else
+            this.gs = new GameStatus(USERCOLOR.white,USERCOLOR.white + " Player", getLocalIp(), getLocalPort());
 
 
         addWindowListener(new WindowAdapter() {
@@ -92,15 +97,6 @@ public class ClientApp extends ClientBackground {
 
     }
 
-    /**
-     * 用户注册
-     */
-    public void login() {
-        //TODO
-        gs.userColor = USERCOLOR.black; //默认黑色
-        gs.userName = "SK"; //默认用户名
-
-    }
 
     /**
      * 连接
@@ -110,18 +106,15 @@ public class ClientApp extends ClientBackground {
             // 成功连接到主机时，设置客户端相应的界面状态
             if (connect2Server(this.gs.getHost(), this.gs.getPort())) {// 连接服务器
                 log.info("连接服务器成功");
-                this.gs.connected = true; //设置连接状态
+                this.gs.connected = true; //设置连接状态 OK
+                this.gs.mouseEnabled = false; //设置鼠标状态 Silence
 
-                //TODO 界面展示
                 this.statusPanel.noticePad.setText("连接成功，请等待!!!");
                 this.statusPanel.repaint();
-
-
             }
         } catch (Exception ei) {
             this.statusPanel.noticePad.setText("网络走丢了...");
             this.statusPanel.repaint();
-
         }
     }
 
@@ -151,6 +144,22 @@ public class ClientApp extends ClientBackground {
 
 
     /**
+     * 用户注册
+     */
+    public void login() {
+        if (gs.getUserColor() == USERCOLOR.black) { //黑棋先行, 主动唤醒自己
+            gs.mouseEnabled = true;
+            statusPanel.noticePad.setText("请下黑棋!");
+            statusPanel.repaint();
+        } else {
+            gs.mouseEnabled = false;
+            statusPanel.noticePad.setText("白棋请等待!");
+            statusPanel.repaint();
+        }
+    }
+
+
+    /**
      * 绑定各类监听器
      */
     public void bindListener() {
@@ -176,11 +185,9 @@ public class ClientApp extends ClientBackground {
             @Override
             public void mouseClicked(MouseEvent e) {
 
-                gs.mouseEnabled = true;
 
-                //TODO 远程唤醒鼠标
-                if (!gs.mouseEnabled)
-                    return; //判断是否能启动鼠标
+                if (!gs.mouseEnabled)//判断是否能启动鼠标, 这样就规避了多线程问题, 无需使用synchronized
+                    return;
 
 
                 Point point = e.getPoint(); //获取鼠标点击位置
@@ -194,8 +201,7 @@ public class ClientApp extends ClientBackground {
                 chessBoard.storeChess(a, b, nowColor); //存储本地棋盘
                 //TODO 判断是否胜利
                 chessBoard.checkVicStatus(nowColor);
-                //绘制对方棋盘
-
+                //TODO 绘制对方棋盘
                 gs.mouseEnabled = false; //关闭鼠标
 
             }

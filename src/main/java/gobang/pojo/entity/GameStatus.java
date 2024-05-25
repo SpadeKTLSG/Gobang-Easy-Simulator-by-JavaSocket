@@ -66,4 +66,11 @@ public class GameStatus {
         this.won = false;
     }
 
+    public GameStatus(String s, String localIp, int localPort) {
+        this.userName = s;
+        this.host = localIp;
+        this.port = localPort;
+        this.mouseEnabled = false;
+        this.won = false;
+    }
 }
