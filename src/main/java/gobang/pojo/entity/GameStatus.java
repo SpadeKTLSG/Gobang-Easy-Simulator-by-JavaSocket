@@ -30,4 +30,14 @@ public class GameStatus {
      * 端口
      */
     int port;
+
+    /**
+     * 鼠标是否能使用
+     */
+    boolean isMouseEnabled = false;
+
+    /**
+     * 是否胜利
+     */
+    boolean isWon = false;
 }

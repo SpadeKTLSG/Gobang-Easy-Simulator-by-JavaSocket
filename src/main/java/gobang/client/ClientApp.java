@@ -3,6 +3,10 @@ package gobang.client;
 import gobang.pojo.entity.GameStatus;
 import gobang.view.ClientBackground;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
@@ -13,7 +17,7 @@ import java.net.Socket;
  * @author SK
  * @date 2024/05/25
  */
-public class ClientApp extends ClientBackground {
+public class ClientApp extends ClientBackground implements ActionListener, KeyListener {
 
     /**
      * 客户端套接字
@@ -47,6 +51,26 @@ public class ClientApp extends ClientBackground {
      * 初始化
      */
     public void init() {
+
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
 
     }
 }

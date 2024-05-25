@@ -1,15 +1,11 @@
 package gobang.view;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
 /**
- * 客户端背景
+ * 客户端视图层
  */
-public class ClientBackground extends Frame implements ActionListener, KeyListener {
+public class ClientBackground extends Frame  {
 
     private Panel centerPanel = new Panel();
 
@@ -29,23 +25,4 @@ public class ClientBackground extends Frame implements ActionListener, KeyListen
     }
 
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-
-    }
-
-    @Override
-    public void keyTyped(KeyEvent e) {
-
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-
-    }
 }

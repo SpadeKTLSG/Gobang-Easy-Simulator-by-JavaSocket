@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * 用户界面状态面板, 用于提示
+ * 用户界面状态面板
  *
  * @author SK
  * @date 2024/05/25
