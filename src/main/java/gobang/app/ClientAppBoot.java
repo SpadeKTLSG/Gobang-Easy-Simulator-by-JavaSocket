@@ -9,8 +9,7 @@ public class ClientAppBoot {
 
     public static void main(String[] args) {
         ClientApp client = new ClientApp();
-        client.init();
-        log.info("{}客户端启动成功", "gobang本地");
+        log.info("{}客户端启动成功", client.getTitle());
     }
 
 }

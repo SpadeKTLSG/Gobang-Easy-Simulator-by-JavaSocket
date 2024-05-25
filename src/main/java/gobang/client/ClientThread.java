@@ -19,6 +19,11 @@ public class ClientThread extends Thread {
     private ClientApp ca;
 
 
+    public ClientThread(ClientApp ca) {
+        this.ca = ca;
+    }
+
+
     /**
      * 处理信息
      */

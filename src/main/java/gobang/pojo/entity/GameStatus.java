@@ -32,7 +32,7 @@ public class GameStatus {
     int port;
 
     /**
-     * 鼠标是否能使用
+     * 鼠标是否启用
      */
     boolean isMouseEnabled = false;
 
@@ -40,4 +40,18 @@ public class GameStatus {
      * 是否胜利
      */
     boolean isWon = false;
+
+
+    public GameStatus(USERCOLOR userColor, String userName, String host, int port) {
+        this.userColor = userColor;
+        this.userName = userName;
+        this.host = host;
+        this.port = port;
+    }
+
+    public GameStatus(String host, int port) {
+        this.host = host;
+        this.port = port;
+    }
+
 }

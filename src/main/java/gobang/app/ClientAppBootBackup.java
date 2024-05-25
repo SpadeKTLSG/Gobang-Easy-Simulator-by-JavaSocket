@@ -9,8 +9,7 @@ public class ClientAppBootBackup {
 
     public static void main(String[] args) {
         ClientApp client = new ClientApp();
-        client.init();
-        log.info("{}客户端启动成功", "gobang本地fake");
+        log.info("{}客户端启动成功", client.getTitle());
     }
 
 }
