@@ -1,6 +1,6 @@
 package gobang.client;
 
-import gobang.pojo.entity.GameStatus;
+import gobang.pojo.entity.*;
 import gobang.view.ClientBackground;
 import lombok.extern.slf4j.Slf4j;
 
@@ -12,8 +12,11 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
+import static gobang.pojo.entity.USERCOLOR.black;
 import static gobang.utils.connectUtils.getLocalIp;
 import static gobang.utils.connectUtils.getLocalPort;
+import static gobang.utils.viewUtils.DSize;
+import static gobang.utils.viewUtils.bindKeyToAction;
 
 /**
  * 客户端应用
@@ -122,51 +125,51 @@ public class ClientApp extends ClientBackground {
      */
     public void bindListener() {
 
-        bindKeyToAction("SPACE", "doSpaceAction", new AbstractAction() {
+        //空格键监听事件 -
+        bindKeyToAction(this, "SPACE", "doSpaceAction", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Space key pressed");
             }
         });
 
-        // Bind the enter key to an action
-        bindKeyToAction("ENTER", "doEnterAction", new AbstractAction() {
+        //回车键监听事件 -
+        bindKeyToAction(this, "ENTER", "doEnterAction", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Enter key pressed");
             }
         });
 
-        //鼠标监听事件
+        //鼠标单击监听事件 - 下棋
         chessBoard.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 //TODO 鼠标点击事件
-                int dis = chessBoard.getCellSize();
-                dis = 30;
-                Point point = e.getPoint(); // 获取鼠标点击的坐标
-                System.out.println("x=" + point.x +"    y=" + point.y);
 
+                Point point = e.getPoint();
+                System.out.println("x=" + point.x + "    y=" + point.y);
 
-                int a = (point.x-30) / dis, b = (point.y-30) / dis;
+                int a = (point.x - DSize) / DSize, b = (point.y - DSize) / DSize;
                 System.out.println("a=" + a + " b=" + b);
 
+                //TODO test
+                //画棋子
+                //判断能不能启动鼠标
+                //读取gs的isMouseEnabled字段
+                //读取黑白双方的颜色
+                paintChessPoint(a, b, black);
             }
         });
 
+
     }
 
-    /**
-     * Binds a key to an action.
-     *
-     * @param key The key to bind.
-     * @param actionName The name of the action.
-     * @param action The action to perform.
-     */
-    private void bindKeyToAction(String key, String actionName, Action action) {
-        KeyStroke keyStroke = KeyStroke.getKeyStroke(key);
-        this.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(keyStroke, actionName);
-        this.getRootPane().getActionMap().put(actionName, action);
+    public void paintChessPoint(int xPos, int yPos, USERCOLOR userColor) {
+
+        Chess chess = userColor == black ? new BlackChess(chessBoard) : new WhiteChess(chessBoard);
+        chess.setBounds(xPos * DSize + DSize - 5, yPos * DSize + DSize - 5, DSize, DSize);
+        chessBoard.add(chess);
     }
 
 }

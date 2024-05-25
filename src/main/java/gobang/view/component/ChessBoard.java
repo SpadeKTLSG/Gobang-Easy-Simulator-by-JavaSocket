@@ -16,28 +16,32 @@ import java.awt.*;
 public class ChessBoard extends Panel {
 
     /**
-     * 棋盘格子大小
+     * 分割线大小标记
      */
-    int cellSize = 40;
+    public int divisionSize = 30;
+
+    /**
+     * 棋盘格子大小标记
+     */
+    public int cellSize = 40;
 
     /**
      * 棋盘右边界
      */
-    int rightEnd = 580;
+    public int rightEnd = 580;
 
     /**
      * 棋盘上的大黑点大小
      */
-    int ovalSize = 8;
+    public int ovalSize = 8;
 
     /**
      * 棋盘上的大黑点坐标对齐参考点
      */
-    int[] ovalPoints = {126, 306, 486};
+    public int[] ovalPoints = {126, 306, 486};
 
     public ChessBoard() {
         setSize(600, 600);
-
         setLayout(null);
         setBackground(new Color(200, 135, 60));
 
@@ -51,7 +55,7 @@ public class ChessBoard extends Panel {
     @Override
     public void paint(Graphics g) {
         // 画横线和竖线
-        for (int i = cellSize; i <= rightEnd; i = i + 30) {
+        for (int i = cellSize; i <= rightEnd; i = i + divisionSize) {
             g.drawLine(cellSize, i, rightEnd, i);
             g.drawLine(i, cellSize, i, rightEnd);
         }

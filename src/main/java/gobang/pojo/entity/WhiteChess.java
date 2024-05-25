@@ -4,15 +4,10 @@ import gobang.view.component.ChessBoard;
 
 import java.awt.*;
 
-public class WhiteChess extends Canvas {
-
-    /**
-     * 白棋所属的棋盘
-     */
-    private ChessBoard chessBoard;
+public class WhiteChess extends Chess {
 
     public WhiteChess(ChessBoard cb) {
-        this.chessBoard = cb;
+        super(cb);
     }
 
     @Override
