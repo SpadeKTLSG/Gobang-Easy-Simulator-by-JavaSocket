@@ -1,10 +1,6 @@
 package gobang.view.component;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
 /**
  * 棋盘视图组件
@@ -12,7 +8,7 @@ import java.awt.event.KeyListener;
  * @author SK
  * @date 2024/05/25
  */
-public class ChessBoard extends Panel implements ActionListener, KeyListener {
+public class ChessBoard extends Panel {
 
 
     public ChessBoard() {
@@ -46,23 +42,5 @@ public class ChessBoard extends Panel implements ActionListener, KeyListener {
 
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
 
-    }
-
-    @Override
-    public void keyTyped(KeyEvent e) {
-
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-
-    }
 }

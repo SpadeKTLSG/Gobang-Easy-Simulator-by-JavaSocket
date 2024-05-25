@@ -20,7 +20,7 @@ import static gobang.utils.connectUtils.getLocalPort;
  * @date 2024/05/25
  */
 @Slf4j
-public class ClientApp extends ClientBackground implements ActionListener, KeyListener {
+public class ClientApp extends ClientBackground {
 
     /**
      * 客户端套接字
@@ -117,49 +117,12 @@ public class ClientApp extends ClientBackground implements ActionListener, KeyLi
 
 
     public void bindListener() {
-        // 绑定监听器: 需在键盘组件上添加监听器
-        this.addKeyListener(this.chessBoard);
-/*        this.setFocusable(true);
-        this.requestFocusInWindow();*/
+//        // 绑定监听器: 需在键盘组件上添加监听器
+//        this.addKeyListener(this.chessBoard);
+///*        this.setFocusable(true);
+//        this.requestFocusInWindow();*/
     }
 
 
-    /**
-     * 组件:点击
-     */
-    @Override
-    public void actionPerformed(ActionEvent e) {
 
-    }
-
-
-    /**
-     * 键盘:按下
-     */
-    @Override
-    public void keyPressed(KeyEvent e) {
-        //按下空格键执行连接
-        //
-        if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-            System.out.println("按下空格键");
-        }
-
-    }
-
-
-    /**
-     * 键盘:输入
-     */
-    @Override
-    public void keyTyped(KeyEvent e) {
-
-    }
-
-    /**
-     * 键盘:释放
-     */
-    @Override
-    public void keyReleased(KeyEvent e) {
-
-    }
 }
