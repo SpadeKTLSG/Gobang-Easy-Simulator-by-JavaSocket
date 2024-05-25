@@ -65,8 +65,6 @@ public class ClientApp extends ClientBackground {
         doConnect();
         login();
         bindListener();
-
-
     }
 
     /**

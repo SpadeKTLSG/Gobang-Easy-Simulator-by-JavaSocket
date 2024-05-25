@@ -51,9 +51,5 @@ public class ClientBackground extends JFrame {
         setVisible(true);
         setResizable(false); //设置窗口不可调整大小
         this.validate(); //验证此容器及其所有子组件。
-
-
     }
-
-
 }

@@ -16,10 +16,6 @@ public class ServerBackground extends JFrame {
      */
     protected Panel centerPanel = new Panel();
 
-    /**
-     * 监视面板
-     */
-    protected WatchPanel watchPanel = new WatchPanel();
 
     /**
      * 上部面板
@@ -27,11 +23,19 @@ public class ServerBackground extends JFrame {
     protected Panel upperPanel = new Panel();
 
     /**
+     * 监视面板
+     */
+    protected WatchPanel watchPanel = new WatchPanel();
+
+    /**
      * 未使用面板
      */
     protected NilPanel nilPanel = new NilPanel();
 
 
+    /**
+     * 服务端视图层Init
+     */
     public ServerBackground() {
         super("GobangEZSimulator - 服务端");
         setLayout(new BorderLayout());

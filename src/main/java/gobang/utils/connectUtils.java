@@ -18,11 +18,11 @@ public class connectUtils {
     }
 
     /**
-     * 13000 - 14000之间随机生成一个本地端口号
+     * 指定一个本地端口号
      *
      * @return int
      */
     public static int getLocalPort() {
-        return (int) (Math.random() * 1000 + 13000);
+        return 11451;
     }
 }
