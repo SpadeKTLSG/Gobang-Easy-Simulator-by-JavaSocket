@@ -1,6 +1,6 @@
 package gobang.pojo.entity;
 
-import gobang.view.ChessBoard;
+import gobang.view.component.ChessBoard;
 
 import java.awt.*;
 

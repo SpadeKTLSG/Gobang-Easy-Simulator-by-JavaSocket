@@ -3,10 +3,7 @@ package gobang.client;
 import gobang.pojo.entity.GameStatus;
 import gobang.view.ClientBackground;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
@@ -51,6 +48,14 @@ public class ClientApp extends ClientBackground implements ActionListener, KeyLi
      * 初始化
      */
     public void init() {
+
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                // TODO 关闭连接
+                System.exit(0);
+            }
+        });
 
     }
 
