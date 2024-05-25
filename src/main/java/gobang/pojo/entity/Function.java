@@ -4,7 +4,7 @@ public enum Function {
     /**
      * 无
      */
-    NONE,
+    ELSE,
     /**
      * 开始游戏
      */

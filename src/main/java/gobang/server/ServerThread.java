@@ -9,6 +9,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
+import static gobang.pojo.entity.Function.ELSE;
+
 @Slf4j
 public class ServerThread extends Thread {
 
@@ -64,11 +66,9 @@ public class ServerThread extends Thread {
     public void run() {
 
         // 等待连接到主机的信息
-
-
         try {
             is = new DataInputStream(clientSocket.getInputStream());
-            sendInitMsg();
+            sendInitMsg("服务器到客户端的连接建立成功");
             while (true) {
 
                 try {
@@ -91,9 +91,12 @@ public class ServerThread extends Thread {
     /**
      * 服务器向连接客户端线程发送初始化消息
      */
-    public void sendInitMsg() throws IOException {
+    public void sendInitMsg(String s) throws IOException {
+        R r = new R(ELSE, s);
+        String json = new Gson().toJson(r); // 将R对象转换为JSON格式
+        os.writeUTF(json);
+        os.flush();
         log.info("服务器到客户端的连接建立成功");
-        os.writeUTF("连接建立成功");
     }
 
 

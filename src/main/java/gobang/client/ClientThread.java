@@ -30,7 +30,9 @@ public class ClientThread extends Thread {
      * 处理信息
      */
     public void dealWithMsg(R r) {
-//TODO
+        //TODO
+        //暂时还原出来, 分别打印
+        System.out.println(r.getFunction().toString() + " : " + r.getData().toString());
 
     }
 
@@ -56,7 +58,7 @@ public class ClientThread extends Thread {
                 if (json.trim().startsWith("{")) {
                     R r = new Gson().fromJson(json, R.class);
                     dealWithMsg(r);
-                } else {
+                } else { // 处理异常JSON
                     log.warn("Invalid JSON string: " + json);
                 }
 
