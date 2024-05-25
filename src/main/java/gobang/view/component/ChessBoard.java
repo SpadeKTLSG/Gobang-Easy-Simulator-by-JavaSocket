@@ -1,9 +1,18 @@
 package gobang.view.component;
 
+import gobang.pojo.entity.BlackChess;
+import gobang.pojo.entity.Chess;
+import gobang.pojo.entity.USERCOLOR;
+import gobang.pojo.entity.WhiteChess;
+import gobang.utils.Pos;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.awt.*;
+import java.util.ArrayList;
+
+import static gobang.pojo.entity.USERCOLOR.black;
+import static gobang.utils.viewUtils.DSize;
 
 /**
  * 棋盘视图组件
@@ -40,6 +49,17 @@ public class ChessBoard extends Panel {
      */
     public int[] ovalPoints = {126, 306, 486};
 
+    /**
+     * 黑棋位置ArrayList序列, 存放Position对象: int x, int y
+     */
+    public ArrayList<Pos> blackLoc = new ArrayList<>();
+
+    /**
+     * 白棋位置ArrayList序列, 存放Position对象: int x, int y
+     */
+    public ArrayList<Pos> whiteLoc = new ArrayList<>();
+
+
     public ChessBoard() {
         setSize(600, 600);
         setLayout(null);
@@ -67,5 +87,39 @@ public class ChessBoard extends Panel {
 
     }
 
+    /**
+     * 画棋子(本地)
+     */
+    public void paintChess(int xPos, int yPos, USERCOLOR userColor) {
+        Chess chess = userColor == black ? new BlackChess(this) : new WhiteChess(this);
+        chess.setBounds(xPos * DSize + DSize - 5, yPos * DSize + DSize - 5, DSize, DSize);
+        add(chess);
+    }
 
+    /**
+     * 存储棋子位置(本地)
+     */
+    public void storeChess(int xPos, int yPos, USERCOLOR userColor) {
+        if (userColor == black) {
+            blackLoc.add(new Pos(xPos, yPos));
+        } else {
+            whiteLoc.add(new Pos(xPos, yPos));
+        }
+        //print all
+        System.out.println("blackLoc: ");
+        for (Pos pos : blackLoc) {
+            System.out.println(pos.getX() + " " + pos.getY());
+        }
+        System.out.println("whiteLoc: ");
+        for (Pos pos : whiteLoc) {
+            System.out.println(pos.getX() + " " + pos.getY());
+        }
+    }
+
+    /**
+     * 检查当前对应颜色棋手胜利状态
+     */
+    public boolean checkVicStatus(USERCOLOR userColor) {
+        return false; //TODO
+    }
 }

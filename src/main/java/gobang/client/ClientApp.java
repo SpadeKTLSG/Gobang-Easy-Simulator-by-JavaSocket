@@ -1,7 +1,10 @@
 package gobang.client;
 
-import gobang.pojo.entity.*;
+import gobang.pojo.entity.GameStatus;
+import gobang.pojo.entity.USERCOLOR;
 import gobang.view.ClientBackground;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
@@ -12,7 +15,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
-import static gobang.pojo.entity.USERCOLOR.black;
 import static gobang.utils.connectUtils.getLocalIp;
 import static gobang.utils.connectUtils.getLocalPort;
 import static gobang.utils.viewUtils.DSize;
@@ -24,7 +26,9 @@ import static gobang.utils.viewUtils.bindKeyToAction;
  * @author SK
  * @date 2024/05/25
  */
+@EqualsAndHashCode(callSuper = true)
 @Slf4j
+@Data
 public class ClientApp extends ClientBackground {
 
     /**
@@ -54,6 +58,7 @@ public class ClientApp extends ClientBackground {
         super();
         init();
         doConnect();
+        login();
         bindListener();
 
 
@@ -73,6 +78,16 @@ public class ClientApp extends ClientBackground {
                 System.exit(0);
             }
         });
+
+    }
+
+    /**
+     * 用户注册
+     */
+    public void login() {
+        //TODO
+        gs.userColor = USERCOLOR.black; //默认黑色
+        gs.userName = "SK"; //默认用户名
 
     }
 
@@ -145,31 +160,34 @@ public class ClientApp extends ClientBackground {
         chessBoard.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                //TODO 鼠标点击事件
 
-                Point point = e.getPoint();
-                System.out.println("x=" + point.x + "    y=" + point.y);
+                gs.mouseEnabled = true;
 
+                //TODO 远程唤醒鼠标
+                if (!gs.mouseEnabled)
+                    return; //判断是否能启动鼠标
+
+
+                Point point = e.getPoint(); //获取鼠标点击位置
+//                System.out.println("x=" + point.x + "    y=" + point.y);
                 int a = (point.x - DSize) / DSize, b = (point.y - DSize) / DSize;
-                System.out.println("a=" + a + " b=" + b);
+//                System.out.println("a=" + a + " b=" + b);
 
-                //TODO test
-                //画棋子
-                //判断能不能启动鼠标
-                //读取gs的isMouseEnabled字段
-                //读取黑白双方的颜色
-                paintChessPoint(a, b, black);
+                USERCOLOR nowColor = gs.getUserColor(); //读取当前的颜色
+
+                chessBoard.paintChess(a, b, nowColor); //绘制本地棋盘
+                chessBoard.storeChess(a, b, nowColor); //存储本地棋盘
+                //TODO 判断是否胜利
+                chessBoard.checkVicStatus(nowColor);
+                //绘制对方棋盘
+
+                gs.mouseEnabled = false; //关闭鼠标
+
             }
         });
 
 
     }
 
-    public void paintChessPoint(int xPos, int yPos, USERCOLOR userColor) {
-
-        Chess chess = userColor == black ? new BlackChess(chessBoard) : new WhiteChess(chessBoard);
-        chess.setBounds(xPos * DSize + DSize - 5, yPos * DSize + DSize - 5, DSize, DSize);
-        chessBoard.add(chess);
-    }
 
 }
