@@ -1,5 +1,6 @@
 package gobang.client;
 
+import gobang.pojo.dto.R;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -27,24 +28,27 @@ public class ClientThread extends Thread {
     /**
      * 处理信息
      */
-    public void dealWithMsg(String msg) {
+    public void dealWithMsg(R r){
+
 
     }
 
     /**
      * 发送信息
      */
-    public void sendMessage(String msg) {
+    public void sendMessage(R r) {
+        //将
 
     }
 
     @Override
     public void run() {
-        String msgReceived;
+        R r = new R();
         while (true) {
             try {
-                msgReceived = ca.is.readUTF(); // 读取信息
-                dealWithMsg(msgReceived);
+                // 读取JSON格式内容, 并存储到R对象中
+
+                // 处理信息
             } catch (IOException es) {
                 log.warn("客户端线程异常");
                 break;

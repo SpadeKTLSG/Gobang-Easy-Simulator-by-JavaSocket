@@ -1,0 +1,20 @@
+package gobang.pojo.entity;
+
+public enum Function {
+    /**
+     * 无
+     */
+    NONE,
+    /**
+     * 开始游戏
+     */
+    START,
+    /**
+     * 落子
+     */
+    DROP,
+    /**
+     * 退出
+     */
+    EXIT
+}

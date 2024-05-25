@@ -32,6 +32,11 @@ import static gobang.utils.viewUtils.bindKeyToAction;
 public class ClientApp extends ClientBackground {
 
     /**
+     * 客户端线程
+     */
+    public ClientThread clientThread;
+
+    /**
      * 客户端套接字
      */
     public Socket clientSocket;
@@ -74,7 +79,15 @@ public class ClientApp extends ClientBackground {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                // TODO 关闭连接
+                if (gs.connected) {
+                    try {
+                        os.close();
+                        is.close();
+                        clientSocket.close();
+                    } catch (IOException ie) {
+                        log.warn(ie.getMessage());
+                    }
+                }
                 System.exit(0);
             }
         });
@@ -99,8 +112,12 @@ public class ClientApp extends ClientBackground {
             // 成功连接到主机时，设置客户端相应的界面状态
             if (connect2Server(this.gs.getHost(), this.gs.getPort())) {// 连接服务器
                 log.info("连接服务器成功");
+                this.gs.connected = true; //设置连接状态
+
+                //TODO 界面展示
                 this.statusPanel.noticePad.setText("连接成功，请等待!!!");
                 this.statusPanel.repaint();
+
 
             }
         } catch (Exception ei) {
@@ -124,7 +141,7 @@ public class ClientApp extends ClientBackground {
             is = new DataInputStream(clientSocket.getInputStream());
             os = new DataOutputStream(clientSocket.getOutputStream());
 
-            ClientThread clientThread = new ClientThread(this);  // 创建客户端线程并启动监听
+            this.clientThread = new ClientThread(this);  // 创建客户端线程并启动监听
             clientThread.start();
             return true;
 

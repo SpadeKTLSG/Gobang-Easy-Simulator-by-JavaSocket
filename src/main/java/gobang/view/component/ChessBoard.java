@@ -4,7 +4,7 @@ import gobang.pojo.entity.BlackChess;
 import gobang.pojo.entity.Chess;
 import gobang.pojo.entity.USERCOLOR;
 import gobang.pojo.entity.WhiteChess;
-import gobang.utils.Pos;
+import gobang.pojo.dto.Pos;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

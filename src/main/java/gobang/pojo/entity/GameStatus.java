@@ -41,6 +41,14 @@ public class GameStatus {
      */
     public boolean won;
 
+    /**
+     * 是否连接
+     */
+    public boolean connected;
+
+    public GameStatus() {
+    }
+
 
     public GameStatus(USERCOLOR userColor, String userName, String host, int port) {
         this.userColor = userColor;
