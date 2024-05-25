@@ -202,6 +202,8 @@ public class ClientApp extends ClientBackground {
                 //TODO 判断是否胜利
                 chessBoard.checkVicStatus(nowColor);
                 //TODO 绘制对方棋盘
+                //发送消息
+
                 gs.mouseEnabled = false; //关闭鼠标
 
             }

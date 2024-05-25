@@ -1,9 +1,15 @@
 package gobang.server;
 
+import com.google.gson.Gson;
+import gobang.pojo.dto.R;
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.Socket;
 
+@Slf4j
 public class ServerThread extends Thread {
 
     /**
@@ -33,7 +39,6 @@ public class ServerThread extends Thread {
     public ServerThread opponentThread;
 
 
-
     public ServerThread(ServerApp sa, Socket socket, DataOutputStream os, DataInputStream is, ServerThread opponentThread) {
         this.sa = sa;
         this.clientSocket = socket;
@@ -42,6 +47,54 @@ public class ServerThread extends Thread {
         this.opponentThread = opponentThread;
     }
 
-    public void run() {
+
+    /**
+     * 处理信息
+     */
+    public void dealWithMsg(R r) {
+        //TODO 可以在两个服务器线程之间传递消息 opponentThread直接调用
+
     }
+
+
+    /**
+     * 监听客户端消息, 并转发到对手服务器线程处理
+     */
+    @Override
+    public void run() {
+
+        // 等待连接到主机的信息
+
+
+        try {
+            is = new DataInputStream(clientSocket.getInputStream());
+            sendInitMsg();
+            while (true) {
+
+                try {
+                    String json = is.readUTF();
+                    R r = new Gson().fromJson(json, R.class);
+                    dealWithMsg(r);
+                } catch (IOException es) {
+                    log.warn("客户端线程异常");
+                    break;
+                }
+
+            }
+        } catch (IOException esx) {
+            log.warn("服务器线程异常");
+
+        }
+
+    }
+
+    /**
+     * 服务器向连接客户端线程发送初始化消息
+     */
+    public void sendInitMsg() throws IOException {
+        log.info("服务器到客户端的连接建立成功");
+        os.writeUTF("连接建立成功");
+    }
+
+
 }

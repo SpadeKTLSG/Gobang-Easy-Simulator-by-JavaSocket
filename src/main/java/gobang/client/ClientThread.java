@@ -52,8 +52,14 @@ public class ClientThread extends Thread {
         while (true) { //监听
             try {
                 String json = ca.is.readUTF();// 读取JSON格式内容, 并存储到R对象中
-                R r = new Gson().fromJson(json, R.class);
-                dealWithMsg(r);
+
+                if (json.trim().startsWith("{")) {
+                    R r = new Gson().fromJson(json, R.class);
+                    dealWithMsg(r);
+                } else {
+                    log.warn("Invalid JSON string: " + json);
+                }
+
             } catch (IOException es) {
                 log.warn("客户端线程异常");
                 break;
