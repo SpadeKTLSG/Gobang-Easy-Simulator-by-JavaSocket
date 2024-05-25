@@ -35,7 +35,7 @@ public class ClientBackground extends JFrame {
      * 客户端视图层Init
      */
     public ClientBackground() {
-        super("GobangEZSimulator - 客户端");
+        super();
         setLayout(new BorderLayout());
 
         //设置上部面板 = 状态面板 600*80

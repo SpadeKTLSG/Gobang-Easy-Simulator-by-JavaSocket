@@ -105,8 +105,11 @@ public class ServerApp extends ServerBackground {
                         DataInputStream inputData = new DataInputStream(clientSocket.getInputStream());
 
                         serverThreadA = new ServerThread(this, clientSocket, outputData, inputData, serverThreadB);
-
                         serverThreadA.start();
+
+                        //修改界面显示
+                        log.info("已连接用户: A");
+                        super.watchPanel.addConnectInfo("A");
 
                     } else if (BThreadStatus == 0) {
                         BThreadStatus = 1;
@@ -115,8 +118,11 @@ public class ServerApp extends ServerBackground {
                         DataInputStream inputData = new DataInputStream(clientSocket.getInputStream());
 
                         serverThreadB = new ServerThread(this, clientSocket, outputData, inputData, serverThreadA);
-
                         serverThreadB.start();
+
+                        //修改界面显示
+                        log.info("已连接用户: B");
+                        super.watchPanel.addConnectInfo("B");
 
                     } else {
                         log.error("错误! 服务器已满");

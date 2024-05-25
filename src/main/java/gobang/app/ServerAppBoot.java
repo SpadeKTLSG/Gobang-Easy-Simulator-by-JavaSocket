@@ -8,7 +8,7 @@ public class ServerAppBoot {
 
     public static void main(String[] args) {
         ServerApp serverApp = new ServerApp();
-        log.info("{}服务器启动成功", serverApp.getTitle());
+        log.info("{} 服务器启动成功", serverApp.getTitle());
     }
 
 }
