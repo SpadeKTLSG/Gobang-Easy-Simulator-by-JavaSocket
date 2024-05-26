@@ -16,8 +16,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
-import static gobang.pojo.entity.Function.DROP;
-import static gobang.pojo.entity.Function.WIN;
+import static gobang.pojo.entity.Function.*;
 import static gobang.utils.connectUtils.getLocalIp;
 import static gobang.utils.connectUtils.getLocalPort;
 import static gobang.utils.viewUtils.DSize;
@@ -84,7 +83,16 @@ public class ClientApp extends ClientBackground {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                if (gs.connected) {
+                if (gs.start) { //已开局, 则视为失败, 发出退出消息
+                    gs.start = false;
+                    try {
+                        clientThread.sendMessage(new R(EXIT, null));
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+
+                if (gs.connected) { //已连接, 需要关闭连接
                     try {
                         os.close();
                         is.close();
@@ -93,6 +101,7 @@ public class ClientApp extends ClientBackground {
                         log.warn(ie.getMessage());
                     }
                 }
+
                 System.exit(0);
             }
         });
@@ -185,7 +194,7 @@ public class ClientApp extends ClientBackground {
         bindKeyToAction(this, "SPACE", "doSpaceAction", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Space key pressed");
+                //future
             }
         });
 
@@ -193,7 +202,7 @@ public class ClientApp extends ClientBackground {
         bindKeyToAction(this, "ENTER", "doEnterAction", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Enter key pressed");
+                //future
             }
         });
 
@@ -219,9 +228,7 @@ public class ClientApp extends ClientBackground {
 
                 //判断胜利状态
                 if (chessBoard.checkVicStatus(nowColor)) {
-                    System.out.println("You win!");
-                    statusPanel.noticePad.setText("你赢了");
-                    statusPanel.repaint();
+                    normalWon();
                     sendULose();
                 }
 
@@ -234,13 +241,16 @@ public class ClientApp extends ClientBackground {
 
 
                 gs.mouseEnabled = false; //关闭鼠标
-
+                statusPanel.noticePad.setText("等待对手下棋");
             }
         });
 
 
     }
 
+    public void myTurn() {
+        statusPanel.noticePad.setText("请下棋!");
+    }
 
     /**
      * 绘制对手棋子
@@ -251,7 +261,6 @@ public class ClientApp extends ClientBackground {
         r.setFunction(DROP);
         r.setData(new int[]{a, b}); //封装数据到int[]
         this.clientThread.sendMessage(r); //发送消息
-
     }
 
     /**
@@ -265,6 +274,34 @@ public class ClientApp extends ClientBackground {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+
+    /**
+     * 正常获胜方法
+     */
+    public void normalWon() {
+        gs.won = true;
+        gs.mouseEnabled = false;
+        statusPanel.noticePad.setText("你赢了");
+    }
+
+    /**
+     * 正常败北方法
+     */
+    public void normalLost() {
+        gs.mouseEnabled = false;
+        statusPanel.noticePad.setText("你输了");
+    }
+
+
+    /**
+     * 敌人逃跑获胜方法
+     */
+    public void escapeWon() {
+        gs.won = true;
+        gs.mouseEnabled = false;
+        statusPanel.noticePad.setText("敌军大败而归");
     }
 
 }

@@ -42,26 +42,31 @@ public class ClientThread extends Thread {
                 break;
 
             case DROP:
-                //用arrayList接受
+                //用arrayList接受R转换数据, 后强转int
                 ArrayList<Double> position = (ArrayList<Double>) r.getData();
                 Double x = position.get(0);
                 Double y = position.get(1);
 
-                USERCOLOR oppo_color = ca.gs.getUserColor() == USERCOLOR.black ? USERCOLOR.white : USERCOLOR.black;
+                USERCOLOR oppo_color = ca.gs.getUserColor() == USERCOLOR.black ? USERCOLOR.white : USERCOLOR.black; //对手颜色
 
                 ca.chessBoard.paintChess(x.intValue(), y.intValue(), oppo_color);
                 ca.chessBoard.storeChess(x.intValue(), y.intValue(), oppo_color);
                 ca.gs.mouseEnabled = true;
+
+
+                ca.myTurn();//提示自己回合
                 break;
 
             case ELSE:
-                //TODO
+                //future
                 break;
             case EXIT:
-                //TODO
+                //对手逃跑了,当做胜利处理
+                System.out.println("对手逃跑了,我当做胜利处理");
+                ca.escapeWon();
                 break;
             case WIN:
-                //TODO
+                ca.normalLost();
                 break;
             default:
                 log.warn("Invalid function: " + r.getFunction());
