@@ -24,7 +24,7 @@ public class ClientBackground extends JFrame {
     /**
      * 棋盘
      */
-    protected ChessBoard chessBoard = new ChessBoard();
+    public ChessBoard chessBoard = new ChessBoard();
 
     /**
      * 状态面板

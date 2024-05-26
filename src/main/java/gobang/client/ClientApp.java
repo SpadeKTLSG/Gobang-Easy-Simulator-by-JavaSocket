@@ -1,5 +1,6 @@
 package gobang.client;
 
+import gobang.pojo.dto.R;
 import gobang.pojo.entity.GameStatus;
 import gobang.pojo.entity.USERCOLOR;
 import gobang.view.ClientBackground;
@@ -15,6 +16,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
+import static gobang.pojo.entity.Function.DROP;
+import static gobang.pojo.entity.Function.WIN;
 import static gobang.utils.connectUtils.getLocalIp;
 import static gobang.utils.connectUtils.getLocalPort;
 import static gobang.utils.viewUtils.DSize;
@@ -63,8 +66,7 @@ public class ClientApp extends ClientBackground {
         super();
         init(userColor);
         doConnect();
-        login();
-        bindListener();
+
     }
 
     /**
@@ -74,9 +76,9 @@ public class ClientApp extends ClientBackground {
         // 初始化游戏状态字段
 
         if (userColor == USERCOLOR.black)
-            this.gs = new GameStatus(USERCOLOR.black,USERCOLOR.black + " Player", getLocalIp(), getLocalPort());
+            this.gs = new GameStatus(USERCOLOR.black, USERCOLOR.black + " Player", getLocalIp(), getLocalPort());
         else
-            this.gs = new GameStatus(USERCOLOR.white,USERCOLOR.white + " Player", getLocalIp(), getLocalPort());
+            this.gs = new GameStatus(USERCOLOR.white, USERCOLOR.white + " Player", getLocalIp(), getLocalPort());
 
 
         addWindowListener(new WindowAdapter() {
@@ -106,24 +108,20 @@ public class ClientApp extends ClientBackground {
             // 成功连接到主机时，设置客户端相应的界面状态
             if (connect2Server(this.gs.getHost(), this.gs.getPort())) {// 连接服务器
                 log.info("连接服务器成功");
-                this.gs.connected = true; //设置连接状态 OK
-                this.gs.mouseEnabled = false; //设置鼠标状态 Silence
 
-                this.statusPanel.noticePad.setText("连接成功，请等待!!!");
-                this.statusPanel.repaint();
+                this.gs.mouseEnabled = false; //设置鼠标状态 Silence
+                this.gs.connected = true; //设置连接状态 OK
+                this.statusPanel.noticePad.setText("连接成功，请等待对手");
+
             }
         } catch (Exception ei) {
             this.statusPanel.noticePad.setText("网络走丢了...");
-            this.statusPanel.repaint();
+
         }
     }
 
     /**
      * 连接服务器
-     *
-     * @param ip   ip地址
-     * @param port 端口
-     * @return boolean  是否连接成功
      */
     boolean connect2Server(String ip, int port) {
         try {
@@ -142,19 +140,34 @@ public class ClientApp extends ClientBackground {
         return false;
     }
 
+    /**
+     * 主方法
+     */
+    public void func() {
+        this.gs.start = true;
+        this.statusPanel.noticePad.setText("对手已连接, 游戏开始");
+        login();
+        bindListener();
+
+    }
+
 
     /**
      * 用户注册
      */
     public void login() {
+        if (!gs.start) {
+            log.error("游戏未开始");
+        }
+
         if (gs.getUserColor() == USERCOLOR.black) { //黑棋先行, 主动唤醒自己
             gs.mouseEnabled = true;
-            statusPanel.noticePad.setText("请下黑棋!");
-            statusPanel.repaint();
+            statusPanel.noticePad.setText("已开始|请下黑棋!");
+//            statusPanel.repaint();
         } else {
             gs.mouseEnabled = false;
-            statusPanel.noticePad.setText("白棋请等待!");
-            statusPanel.repaint();
+            statusPanel.noticePad.setText("已开始|白棋请等待!");
+//            statusPanel.repaint();
         }
     }
 
@@ -163,6 +176,10 @@ public class ClientApp extends ClientBackground {
      * 绑定各类监听器
      */
     public void bindListener() {
+
+        if (!gs.start) {
+            log.error("游戏未开始");
+        }
 
         //空格键监听事件 -
         bindKeyToAction(this, "SPACE", "doSpaceAction", new AbstractAction() {
@@ -199,10 +216,22 @@ public class ClientApp extends ClientBackground {
 
                 chessBoard.paintChess(a, b, nowColor); //绘制本地棋盘
                 chessBoard.storeChess(a, b, nowColor); //存储本地棋盘
-                //TODO 判断是否胜利
-                chessBoard.checkVicStatus(nowColor);
-                //TODO 绘制对方棋盘
-                //发送消息
+
+                //判断胜利状态
+                if (chessBoard.checkVicStatus(nowColor)) {
+                    System.out.println("You win!");
+                    statusPanel.noticePad.setText("你赢了");
+                    statusPanel.repaint();
+                    sendULose();
+                }
+
+                //发送新棋子位置消息
+                try {
+                    drawOppoChess(a, b);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+
 
                 gs.mouseEnabled = false; //关闭鼠标
 
@@ -212,5 +241,30 @@ public class ClientApp extends ClientBackground {
 
     }
 
+
+    /**
+     * 绘制对手棋子
+     * <p>需要传送到对应服务端, 然后对应服务端唤醒另一个服务端执行其客户端操作</p>
+     */
+    public void drawOppoChess(int a, int b) throws IOException {
+        R r = new R();
+        r.setFunction(DROP);
+        r.setData(new int[]{a, b}); //封装数据到int[]
+        this.clientThread.sendMessage(r); //发送消息
+
+    }
+
+    /**
+     * 给对手发送你输了的消息
+     */
+    public void sendULose() {
+        R r = new R();
+        r.setFunction(WIN);
+        try {
+            this.clientThread.sendMessage(r); //发送消息
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }

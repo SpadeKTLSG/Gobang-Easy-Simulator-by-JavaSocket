@@ -2,9 +2,11 @@ package gobang.client;
 
 import com.google.gson.Gson;
 import gobang.pojo.dto.R;
+import gobang.pojo.entity.USERCOLOR;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * 客户端线程
@@ -30,10 +32,40 @@ public class ClientThread extends Thread {
      * 处理信息
      */
     public void dealWithMsg(R r) {
-        //TODO
-        //暂时还原出来, 分别打印
-        System.out.println(r.getFunction().toString() + " : " + r.getData().toString());
 
+
+        switch (r.getFunction()) {
+
+            case START:
+                System.out.println("确认游戏开始");
+                ca.func();
+                break;
+
+            case DROP:
+                //用arrayList接受
+                ArrayList<Double> position = (ArrayList<Double>) r.getData();
+                Double x = position.get(0);
+                Double y = position.get(1);
+
+                USERCOLOR oppo_color = ca.gs.getUserColor() == USERCOLOR.black ? USERCOLOR.white : USERCOLOR.black;
+
+                ca.chessBoard.paintChess(x.intValue(), y.intValue(), oppo_color);
+                ca.chessBoard.storeChess(x.intValue(), y.intValue(), oppo_color);
+                ca.gs.mouseEnabled = true;
+                break;
+
+            case ELSE:
+                //TODO
+                break;
+            case EXIT:
+                //TODO
+                break;
+            case WIN:
+                //TODO
+                break;
+            default:
+                log.warn("Invalid function: " + r.getFunction());
+        }
     }
 
     /**

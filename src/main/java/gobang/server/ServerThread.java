@@ -56,6 +56,45 @@ public class ServerThread extends Thread {
     public void dealWithMsg(R r) {
         //TODO 可以在两个服务器线程之间传递消息 opponentThread直接调用
 
+
+        System.out.println(r.getFunction().toString() + " : " + r.getData().toString());
+
+        //解包R
+        switch (r.getFunction()) {
+            case START:
+                //在两个服务端线程之间建立连接
+
+
+                break;
+            case DROP:
+                try {
+                    opponentThread.sendMessage(r); //对手服务端线程转发消息
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+                break;
+            case EXIT:
+                //TODO
+                break;
+            case WIN:
+                //TODO
+                break;
+            default:
+                break;
+        }
+
+    }
+
+
+    /**
+     * 给客户端发送信息
+     */
+    public void sendMessage(R r) throws IOException {
+        String json = new Gson().toJson(r); // 将R对象转换为JSON格式
+        System.out.println("服务端发送信息: " + json);
+        os.writeUTF(json);
+        os.flush();
     }
 
 
@@ -74,6 +113,8 @@ public class ServerThread extends Thread {
                 try {
                     String json = is.readUTF();
                     R r = new Gson().fromJson(json, R.class);
+                    //print
+                    System.out.println(r.getFunction().toString() + " : " + r.getData().toString());
                     dealWithMsg(r);
                 } catch (IOException es) {
                     log.warn("客户端线程异常");

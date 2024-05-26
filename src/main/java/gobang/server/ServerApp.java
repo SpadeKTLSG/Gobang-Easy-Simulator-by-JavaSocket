@@ -1,5 +1,7 @@
 package gobang.server;
 
+import gobang.pojo.dto.R;
+import gobang.pojo.entity.Function;
 import gobang.view.ServerBackground;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -50,6 +52,13 @@ public class ServerApp extends ServerBackground {
      * 服务端线程B状态 : 0 = 未连接, 1 = 已连接
      */
     public int BThreadStatus = 0;
+
+
+    /**
+     * 两个线程建立连接标记
+     */
+    public int connected = 0;
+
 
     /**
      * 服务端应用
@@ -104,7 +113,7 @@ public class ServerApp extends ServerBackground {
                         DataOutputStream outputData = new DataOutputStream(clientSocket.getOutputStream());
                         DataInputStream inputData = new DataInputStream(clientSocket.getInputStream());
 
-                        serverThreadA = new ServerThread(this, clientSocket, outputData, inputData, serverThreadB);
+                        serverThreadA = new ServerThread(this, clientSocket, outputData, inputData, null);
                         serverThreadA.start();
 
                         //修改界面显示
@@ -117,7 +126,7 @@ public class ServerApp extends ServerBackground {
                         DataOutputStream outputData = new DataOutputStream(clientSocket.getOutputStream());
                         DataInputStream inputData = new DataInputStream(clientSocket.getInputStream());
 
-                        serverThreadB = new ServerThread(this, clientSocket, outputData, inputData, serverThreadA);
+                        serverThreadB = new ServerThread(this, clientSocket, outputData, inputData, null);
                         serverThreadB.start();
 
                         //修改界面显示
@@ -125,7 +134,16 @@ public class ServerApp extends ServerBackground {
                         super.watchPanel.addConnectInfo("B");
 
                     } else {
-                        log.error("错误! 服务器已满");
+                        log.error("错误! 服务器爆炸了!");
+                    }
+
+                    //由于全部连接, 于是在两个服务端线程之间建立连接, 并启动两个客户端的线程 -> 游戏字段 gs.start = true
+                    if (connected == 0 && AThreadStatus == 1 && BThreadStatus == 1) {
+                        serverThreadA.opponentThread = serverThreadB;
+                        serverThreadB.opponentThread = serverThreadA;
+                        serverThreadA.sendMessage(new R(Function.START, "OPEN THE GAME"));
+                        serverThreadB.sendMessage(new R(Function.START, "OPEN THE GAME"));
+                        connected = 1;
                     }
 
                 } catch (IOException e) {

@@ -68,7 +68,7 @@ public class ChessBoard extends Panel {
     }
 
     /**
-     * 画棋盘
+     * 画棋盘 (本地)
      * <p> 声明: 参考gobang_game项目绘制 </p>
      * <p> 18*18个下棋点, 对应棋盘和存储序列 </p>
      */

@@ -46,6 +46,11 @@ public class GameStatus {
      */
     public boolean connected;
 
+    /**
+     * 是否开始
+     */
+    public boolean start;
+
     public GameStatus() {
     }
 
