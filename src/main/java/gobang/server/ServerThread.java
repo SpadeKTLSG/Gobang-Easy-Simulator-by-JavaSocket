@@ -51,14 +51,38 @@ public class ServerThread extends Thread {
 
 
     /**
-     * 处理信息 -> 转发消息到对手线程
+     * 处理信息
      */
     public void dealWithMsg(R r) {
-        try {
-            opponentThread.sendMessage(r);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+
+        switch (r.getFunction()) {
+
+            case DROP, START:  //转发消息到对手线程
+                try {
+                    opponentThread.sendMessage(r);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                break;
+
+            case WIN, EXIT:  //转发消息后 释放双方线程, 重置状态
+
+                try {
+                    opponentThread.sendMessage(r);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                sa.reSet();
+                break;
+
+            case ELSE:
+                //future
+                break;
+            default:
+                log.warn("Invalid function: " + r.getFunction());
+
         }
+
     }
 
 
@@ -67,7 +91,6 @@ public class ServerThread extends Thread {
      */
     public void sendMessage(R r) throws IOException {
         String json = new Gson().toJson(r); // 将R对象转换为JSON格式
-        System.out.println("服务端发送信息: " + json);
         os.writeUTF(json);
         os.flush();
     }

@@ -86,7 +86,7 @@ public class ServerApp extends ServerBackground {
 
 
     /**
-     * 创建服务器
+     * 构建
      */
     public void doBuild() {
         try {
@@ -96,6 +96,9 @@ public class ServerApp extends ServerBackground {
         }
     }
 
+    /**
+     *  创建服务器
+     */
     public void createServer(int port) {
         try {
             serverSocket = new ServerSocket(port);// 设定当前主机
@@ -110,28 +113,31 @@ public class ServerApp extends ServerBackground {
                     if (AThreadStatus == 0) {
                         AThreadStatus = 1;
 
+                        //创建输入输出流
                         DataOutputStream outputData = new DataOutputStream(clientSocket.getOutputStream());
                         DataInputStream inputData = new DataInputStream(clientSocket.getInputStream());
 
+                        //创建服务端线程
                         serverThreadA = new ServerThread(this, clientSocket, outputData, inputData, null);
                         serverThreadA.start();
 
                         //修改界面显示
-                        log.info("已连接用户: A");
-                        super.watchPanel.addConnectInfo("A");
+                        super.watchPanel.addConnectInfo("1号");
 
                     } else if (BThreadStatus == 0) {
                         BThreadStatus = 1;
 
+                        //创建输入输出流
                         DataOutputStream outputData = new DataOutputStream(clientSocket.getOutputStream());
                         DataInputStream inputData = new DataInputStream(clientSocket.getInputStream());
 
+                        //创建服务端线程
                         serverThreadB = new ServerThread(this, clientSocket, outputData, inputData, null);
                         serverThreadB.start();
 
                         //修改界面显示
                         log.info("已连接用户: B");
-                        super.watchPanel.addConnectInfo("B");
+                        super.watchPanel.addConnectInfo("2号");
 
                     } else {
                         log.error("错误! 服务器爆炸了!");
@@ -157,5 +163,16 @@ public class ServerApp extends ServerBackground {
         }
     }
 
+    /**
+     * 重置服务器状态
+     */
+    public void reSet() {
+        AThreadStatus = 0;
+        BThreadStatus = 0;
+        connected = 0;
+        serverThreadA = null;
+        serverThreadB = null;
+        super.watchPanel.clearConnectInfo();
+    }
 
 }

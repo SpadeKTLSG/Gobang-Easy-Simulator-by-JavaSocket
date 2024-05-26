@@ -38,4 +38,12 @@ public class WatchPanel extends Panel {
     public void addConnectInfo(String info) {
         watchListModel.addElement(info + " 准备就绪!");
     }
+
+    /**
+     * 清空连接信息
+     */
+    public void clearConnectInfo() {
+        watchListModel.clear();
+        watchListModel.addElement("服务端已运行|连接信息:");
+    }
 }

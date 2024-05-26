@@ -105,7 +105,8 @@ public class ChessBoard extends Panel {
         } else {
             whiteLoc.add(new Pos(xPos, yPos));
         }
-        //print all
+
+        //print all TODO
         System.out.println("blackLoc: ");
         for (Pos pos : blackLoc) {
             System.out.println(pos.getX() + " " + pos.getY());
@@ -117,9 +118,36 @@ public class ChessBoard extends Panel {
     }
 
     /**
-     * 检查当前对应颜色棋手胜利状态
+     * 本地检查当前对应颜色棋手胜利状态
      */
     public boolean checkVicStatus(USERCOLOR userColor) {
-        return false; //TODO
+
+        //refer to blackLoc, whiteLoc, make a algorithm to check the victory status: 5 in a row, column, diagonal
+        //if 5 in a row, column, diagonal, return true, else return false
+        ArrayList<Pos> positions = userColor == black ? blackLoc : whiteLoc;
+
+        for (Pos pos : positions) {
+            if (checkDirection(pos, 1, 0, positions) || // Horizontal
+                    checkDirection(pos, 0, 1, positions) || // Vertical
+                    checkDirection(pos, 1, 1, positions) || // Diagonal from top-left to bottom-right
+                    checkDirection(pos, 1, -1, positions)) { // Diagonal from top-right to bottom-left
+                return true;
+            }
+        }
+
+
+
+
+        return false;
+    }
+
+    private boolean checkDirection(Pos start, int dx, int dy, ArrayList<Pos> positions) {
+        for (int i = 1; i < 5; i++) {
+            Pos next = new Pos(start.getX() + i * dx, start.getY() + i * dy);
+            if (!positions.contains(next)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

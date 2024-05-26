@@ -21,6 +21,7 @@ import static gobang.utils.connectUtils.getLocalIp;
 import static gobang.utils.connectUtils.getLocalPort;
 import static gobang.utils.viewUtils.DSize;
 import static gobang.utils.viewUtils.bindKeyToAction;
+import static java.lang.Thread.sleep;
 
 /**
  * 客户端应用
@@ -211,15 +212,15 @@ public class ClientApp extends ClientBackground {
             @Override
             public void mouseClicked(MouseEvent e) {
 
+                if (!gs.start) //游戏未开始
+                    return;
 
                 if (!gs.mouseEnabled)//判断是否能启动鼠标, 这样就规避了多线程问题, 无需使用synchronized
                     return;
 
 
                 Point point = e.getPoint(); //获取鼠标点击位置
-//                System.out.println("x=" + point.x + "    y=" + point.y);
                 int a = (point.x - DSize) / DSize, b = (point.y - DSize) / DSize;
-//                System.out.println("a=" + a + " b=" + b);
 
                 USERCOLOR nowColor = gs.getUserColor(); //读取当前的颜色
 
@@ -230,18 +231,20 @@ public class ClientApp extends ClientBackground {
                 if (chessBoard.checkVicStatus(nowColor)) {
                     normalWon();
                     sendULose();
+                } else {
+
+                    //发送新棋子位置消息
+                    try {
+                        drawOppoChess(a, b);
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
+
+
+                    gs.mouseEnabled = false; //关闭鼠标
+                    statusPanel.noticePad.setText("等待对手下棋");
                 }
 
-                //发送新棋子位置消息
-                try {
-                    drawOppoChess(a, b);
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
-
-
-                gs.mouseEnabled = false; //关闭鼠标
-                statusPanel.noticePad.setText("等待对手下棋");
             }
         });
 
@@ -281,17 +284,31 @@ public class ClientApp extends ClientBackground {
      * 正常获胜方法
      */
     public void normalWon() {
+        gs.start = false;
         gs.won = true;
         gs.mouseEnabled = false;
         statusPanel.noticePad.setText("你赢了");
+        try {
+            sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     /**
      * 正常败北方法
      */
     public void normalLost() {
+        gs.start = false;
         gs.mouseEnabled = false;
         statusPanel.noticePad.setText("你输了");
+        try {
+            sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        System.exit(0);
     }
 
 
@@ -300,6 +317,7 @@ public class ClientApp extends ClientBackground {
      */
     public void escapeWon() {
         gs.won = true;
+        gs.start = false;
         gs.mouseEnabled = false;
         statusPanel.noticePad.setText("敌军大败而归");
     }

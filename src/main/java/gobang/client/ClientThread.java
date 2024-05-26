@@ -37,7 +37,7 @@ public class ClientThread extends Thread {
         switch (r.getFunction()) {
 
             case START:
-                System.out.println("确认游戏开始");
+                log.info("Game Start!");
                 ca.func();
                 break;
 
@@ -57,16 +57,15 @@ public class ClientThread extends Thread {
                 ca.myTurn();//提示自己回合
                 break;
 
-            case ELSE:
-                //future
-                break;
+
             case EXIT:
-                //对手逃跑了,当做胜利处理
-                System.out.println("对手逃跑了,我当做胜利处理");
-                ca.escapeWon();
+                ca.escapeWon();//对手逃跑了,当做胜利处理
                 break;
             case WIN:
-                ca.normalLost();
+                ca.normalLost();//对手胜利
+                break;
+            case ELSE:
+                //future
                 break;
             default:
                 log.warn("Invalid function: " + r.getFunction());
@@ -78,7 +77,6 @@ public class ClientThread extends Thread {
      */
     public void sendMessage(R r) throws IOException {
         String json = new Gson().toJson(r); // 将R对象转换为JSON格式
-        System.out.println("发送信息: " + json);
         ca.os.writeUTF(json);
         ca.os.flush();
     }
