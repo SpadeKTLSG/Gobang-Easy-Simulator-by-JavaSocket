@@ -97,7 +97,7 @@ public class ServerApp extends ServerBackground {
     }
 
     /**
-     *  创建服务器
+     * 创建服务器
      */
     public void createServer(int port) {
         try {
@@ -109,7 +109,7 @@ public class ServerApp extends ServerBackground {
 
                     Socket clientSocket = serverSocket.accept(); //得到一个客户端套接口
 
-                    //选择A / B服务端线程进行处理
+                    //选择A / B服务端线程进行处理 TODO
                     if (AThreadStatus == 0) {
                         AThreadStatus = 1;
 
@@ -122,6 +122,7 @@ public class ServerApp extends ServerBackground {
                         serverThreadA.start();
 
                         //修改界面显示
+                        log.info("已连接用户: 1号");
                         super.watchPanel.addConnectInfo("1号");
 
                     } else if (BThreadStatus == 0) {
@@ -136,7 +137,7 @@ public class ServerApp extends ServerBackground {
                         serverThreadB.start();
 
                         //修改界面显示
-                        log.info("已连接用户: B");
+                        log.info("已连接用户: 2号");
                         super.watchPanel.addConnectInfo("2号");
 
                     } else {

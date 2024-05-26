@@ -20,7 +20,7 @@ public class ClientThread extends Thread {
     /**
      * 与其交互的客户端应用
      */
-    private ClientApp ca;
+    private final ClientApp ca;
 
 
     public ClientThread(ClientApp ca) {
@@ -36,12 +36,12 @@ public class ClientThread extends Thread {
 
         switch (r.getFunction()) {
 
-            case START:
+            case START -> {
                 log.info("Game Start!");
                 ca.func();
-                break;
+            }
 
-            case DROP:
+            case DROP -> {
                 //用arrayList接受R转换数据, 后强转int
                 ArrayList<Double> position = (ArrayList<Double>) r.getData();
                 Double x = position.get(0);
@@ -55,22 +55,21 @@ public class ClientThread extends Thread {
 
 
                 ca.myTurn();//提示自己回合
-                break;
+            }
 
 
-            case EXIT:
-                ca.escapeWon();//对手逃跑了,当做胜利处理
-                break;
-            case WIN:
-                ca.normalLost();//对手胜利
-                break;
-            case ELSE:
+            case EXIT -> ca.escapeWon();//对手逃跑了,当做胜利处理
+
+            case WIN -> ca.normalLost();//对手胜利
+
+            case ELSE -> {
                 //future
-                break;
-            default:
-                log.warn("Invalid function: " + r.getFunction());
+            }
+
+            default -> log.warn("Invalid function: " + r.getFunction());
         }
     }
+
 
     /**
      * 发送信息
@@ -88,12 +87,12 @@ public class ClientThread extends Thread {
     public void run() {
         while (true) { //监听
             try {
-                String json = ca.is.readUTF();// 读取JSON格式内容, 并存储到R对象中
+                String json = ca.is.readUTF();
 
                 if (json.trim().startsWith("{")) {
                     R r = new Gson().fromJson(json, R.class);
                     dealWithMsg(r);
-                } else { // 处理异常JSON
+                } else {
                     log.warn("Invalid JSON string: " + json);
                 }
 

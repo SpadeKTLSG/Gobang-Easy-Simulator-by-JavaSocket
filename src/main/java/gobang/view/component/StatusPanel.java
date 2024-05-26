@@ -16,7 +16,7 @@ public class StatusPanel extends Panel {
      */
     public TextField noticePad = new TextField();
 
-    //倒计时器 TODO
+    //倒计时器 future
 
     public StatusPanel() {
 
@@ -29,8 +29,6 @@ public class StatusPanel extends Panel {
 
         setLayout(null);
         setBackground(new Color(114, 114, 114));
-
-
     }
 
 

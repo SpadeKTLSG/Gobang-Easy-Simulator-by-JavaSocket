@@ -73,14 +73,13 @@ public class ClientApp extends ClientBackground {
      * 初始化
      */
     public void init(USERCOLOR userColor) {
-        // 初始化游戏状态字段
 
-        if (userColor == USERCOLOR.black)
+        if (userColor == USERCOLOR.black) // 初始化游戏状态字段
             this.gs = new GameStatus(USERCOLOR.black, USERCOLOR.black + " Player", getLocalIp(), getLocalPort());
         else
             this.gs = new GameStatus(USERCOLOR.white, USERCOLOR.white + " Player", getLocalIp(), getLocalPort());
 
-
+        //窗口控件初始化
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -112,23 +111,21 @@ public class ClientApp extends ClientBackground {
 
     /**
      * 连接
+     * <p>成功连接到主机时，设置客户端相应的界面状态</p>
      */
     public void doConnect() {
         try {
-            // 成功连接到主机时，设置客户端相应的界面状态
             if (connect2Server(this.gs.getHost(), this.gs.getPort())) {// 连接服务器
                 log.info("连接服务器成功");
-
                 this.gs.mouseEnabled = false; //设置鼠标状态 Silence
                 this.gs.connected = true; //设置连接状态 OK
                 this.statusPanel.noticePad.setText("连接成功，请等待对手");
-
             }
         } catch (Exception ei) {
             this.statusPanel.noticePad.setText("网络走丢了...");
-
         }
     }
+
 
     /**
      * 连接服务器
@@ -140,7 +137,8 @@ public class ClientApp extends ClientBackground {
             is = new DataInputStream(clientSocket.getInputStream());
             os = new DataOutputStream(clientSocket.getOutputStream());
 
-            this.clientThread = new ClientThread(this);  // 创建客户端线程并启动监听
+            // 创建客户端线程并启动监听
+            this.clientThread = new ClientThread(this);
             clientThread.start();
             return true;
 
@@ -149,6 +147,7 @@ public class ClientApp extends ClientBackground {
         }
         return false;
     }
+
 
     /**
      * 主方法
@@ -173,11 +172,10 @@ public class ClientApp extends ClientBackground {
         if (gs.getUserColor() == USERCOLOR.black) { //黑棋先行, 主动唤醒自己
             gs.mouseEnabled = true;
             statusPanel.noticePad.setText("已开始|请下黑棋!");
-//            statusPanel.repaint();
+
         } else {
             gs.mouseEnabled = false;
             statusPanel.noticePad.setText("已开始|白棋请等待!");
-//            statusPanel.repaint();
         }
     }
 
@@ -218,8 +216,8 @@ public class ClientApp extends ClientBackground {
                 if (!gs.mouseEnabled)//判断是否能启动鼠标, 这样就规避了多线程问题, 无需使用synchronized
                     return;
 
-
-                Point point = e.getPoint(); //获取鼠标点击位置
+                //获取鼠标点击位置
+                Point point = e.getPoint();
                 int a = (point.x - DSize) / DSize, b = (point.y - DSize) / DSize;
 
                 USERCOLOR nowColor = gs.getUserColor(); //读取当前的颜色
@@ -231,15 +229,14 @@ public class ClientApp extends ClientBackground {
                 if (chessBoard.checkVicStatus(nowColor)) {
                     normalWon();
                     sendULose();
-                } else {
 
-                    //发送新棋子位置消息
+                } else {//发送新棋子位置消息
+
                     try {
                         drawOppoChess(a, b);
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }
-
 
                     gs.mouseEnabled = false; //关闭鼠标
                     statusPanel.noticePad.setText("等待对手下棋");
@@ -251,9 +248,14 @@ public class ClientApp extends ClientBackground {
 
     }
 
+
+    /**
+     * 提示自己回合
+     */
     public void myTurn() {
         statusPanel.noticePad.setText("请下棋!");
     }
+
 
     /**
      * 绘制对手棋子
@@ -263,20 +265,7 @@ public class ClientApp extends ClientBackground {
         R r = new R();
         r.setFunction(DROP);
         r.setData(new int[]{a, b}); //封装数据到int[]
-        this.clientThread.sendMessage(r); //发送消息
-    }
-
-    /**
-     * 给对手发送你输了的消息
-     */
-    public void sendULose() {
-        R r = new R();
-        r.setFunction(WIN);
-        try {
-            this.clientThread.sendMessage(r); //发送消息
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        this.clientThread.sendMessage(r);
     }
 
 
@@ -287,13 +276,23 @@ public class ClientApp extends ClientBackground {
         gs.start = false;
         gs.won = true;
         gs.mouseEnabled = false;
-        statusPanel.noticePad.setText("你赢了");
+        statusPanel.noticePad.setText("你赢了, 请回罢");
         try {
-            sleep(2000);
+            sleep(1000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
 
+    }
+
+    /**
+     * 敌人逃跑获胜方法
+     */
+    public void escapeWon() {
+        gs.won = true;
+        gs.start = false;
+        gs.mouseEnabled = false;
+        statusPanel.noticePad.setText("敌军大败而归~");
     }
 
     /**
@@ -304,22 +303,23 @@ public class ClientApp extends ClientBackground {
         gs.mouseEnabled = false;
         statusPanel.noticePad.setText("你输了");
         try {
-            sleep(2000);
+            sleep(1500);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
         System.exit(0);
     }
 
-
     /**
-     * 敌人逃跑获胜方法
+     * 给对手发送你输了
      */
-    public void escapeWon() {
-        gs.won = true;
-        gs.start = false;
-        gs.mouseEnabled = false;
-        statusPanel.noticePad.setText("敌军大败而归");
+    public void sendULose() {
+        R r = new R();
+        r.setFunction(WIN);
+        try {
+            this.clientThread.sendMessage(r);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
-
 }

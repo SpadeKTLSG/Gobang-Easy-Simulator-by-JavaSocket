@@ -8,5 +8,12 @@ package gobang.pojo.entity;
  */
 public enum USERCOLOR {
 
-    black, white
+    /**
+     * 黑色
+     */
+    black,
+    /**
+     * 白色
+     */
+    white
 }

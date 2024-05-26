@@ -1,20 +1,26 @@
 package gobang.pojo.entity;
 
+/**
+ * 功能
+ *
+ * @author SK
+ * @date 2024/05/26
+ */
 public enum Function {
     /**
-     * 无
+     * 其他
      */
     ELSE,
     /**
-     * 开始游戏
+     * 我确认开始游戏
      */
     START,
     /**
-     * 落子
+     * 我落子了
      */
     DROP,
     /**
-     * 退出
+     * 我不打扰, 我走了蛤
      */
     EXIT,
     /**

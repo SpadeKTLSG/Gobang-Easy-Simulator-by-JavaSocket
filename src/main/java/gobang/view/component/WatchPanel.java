@@ -3,6 +3,12 @@ package gobang.view.component;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * 监视面板组件
+ *
+ * @author SK
+ * @date 2024/05/26
+ */
 public class WatchPanel extends Panel {
 
     /**

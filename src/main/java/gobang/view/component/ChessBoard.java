@@ -1,10 +1,10 @@
 package gobang.view.component;
 
+import gobang.pojo.dto.Pos;
 import gobang.pojo.entity.BlackChess;
 import gobang.pojo.entity.Chess;
 import gobang.pojo.entity.USERCOLOR;
 import gobang.pojo.entity.WhiteChess;
-import gobang.pojo.dto.Pos;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -105,16 +105,6 @@ public class ChessBoard extends Panel {
         } else {
             whiteLoc.add(new Pos(xPos, yPos));
         }
-
-        //print all TODO
-        System.out.println("blackLoc: ");
-        for (Pos pos : blackLoc) {
-            System.out.println(pos.getX() + " " + pos.getY());
-        }
-        System.out.println("whiteLoc: ");
-        for (Pos pos : whiteLoc) {
-            System.out.println(pos.getX() + " " + pos.getY());
-        }
     }
 
     /**
@@ -122,25 +112,27 @@ public class ChessBoard extends Panel {
      */
     public boolean checkVicStatus(USERCOLOR userColor) {
 
-        //refer to blackLoc, whiteLoc, make a algorithm to check the victory status: 5 in a row, column, diagonal
-        //if 5 in a row, column, diagonal, return true, else return false
         ArrayList<Pos> positions = userColor == black ? blackLoc : whiteLoc;
 
         for (Pos pos : positions) {
-            if (checkDirection(pos, 1, 0, positions) || // Horizontal
-                    checkDirection(pos, 0, 1, positions) || // Vertical
-                    checkDirection(pos, 1, 1, positions) || // Diagonal from top-left to bottom-right
-                    checkDirection(pos, 1, -1, positions)) { // Diagonal from top-right to bottom-left
+            if (checkDirection(pos, 1, 0, positions) || // 水平
+                    checkDirection(pos, 0, 1, positions) || // 垂直
+                    checkDirection(pos, 1, 1, positions) || // 对角线
+                    checkDirection(pos, 1, -1, positions)) { // 反对角线
                 return true;
             }
         }
-
-
-
-
         return false;
     }
 
+    /**
+     * 检查当前方向是否有五个棋子相连
+     *
+     * @param start     Pos(x,y)
+     * @param dx        x方向
+     * @param dy        y方向
+     * @param positions ArrayList<Pos>
+     */
     private boolean checkDirection(Pos start, int dx, int dy, ArrayList<Pos> positions) {
         for (int i = 1; i < 5; i++) {
             Pos next = new Pos(start.getX() + i * dx, start.getY() + i * dy);
