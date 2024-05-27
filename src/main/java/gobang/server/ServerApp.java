@@ -109,7 +109,7 @@ public class ServerApp extends ServerBackground {
 
                     Socket clientSocket = serverSocket.accept(); //得到一个客户端套接口
 
-                    //选择A / B服务端线程进行处理 TODO
+                    //选择A / B服务端线程进行处理
                     if (AThreadStatus == 0) {
                         AThreadStatus = 1;
 

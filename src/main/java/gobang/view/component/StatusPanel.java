@@ -16,7 +16,7 @@ public class StatusPanel extends Panel {
      */
     public TextField noticePad = new TextField();
 
-    //倒计时器 future
+    //倒计时器 用于显示倒计时 (占坑)
 
     public StatusPanel() {
 
